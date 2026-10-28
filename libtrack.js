@@ -8,6 +8,15 @@ libtrack.use(express.urlencoded({ extended: true }));
 
 const conn = require('./conn.js');
 
+libtrack.use(express.json());
+const scannerRoutes = require('./scannerRoutes');
+const statisticsRoutes = require('./statistic');
+libtrack.use(statisticsRoutes);
+libtrack.use(require('./visit-records.js'));
+
+
+libtrack.use(scannerRoutes);
+
 libtrack.get('/', (req, res) => {
     res.render('landing-page');
 });
@@ -75,48 +84,79 @@ libtrack.post('/admin-reg', (req, res) => {
     });
 });
 
-// ========= ADMIN DASHBOARD =========
+//Paolo
 libtrack.get('/admin-dashboard', (req, res) => {
-    conn.query('SELECT * FROM courses', (err, courses) => {
-        if (err) return res.send("Database error");
+    // const sql = `
+    //     SELECT v.school_id, s.fullname, c.course_code, s.year_level, v.time_visit
+    //     FROM visits AS v JOIN students AS s 
+    //     ON v.school_id = s.school_id
+    //     JOIN courses AS c ON s.course_id = c.course_id
+    //     ORDER BY v.time_visit DESC;
+    // `;
+    const sql = `SELECT
+        v.time_visit,
+        s.school_id,
+        s.fullname,
+        c.course_code,
+        s.year_level
+        FROM visits AS v
+        INNER JOIN students AS s
+        ON v.school_id = s.school_id
+        INNER JOIN courses AS c
+        ON s.course_id = c.course_id
+        WHERE DATE(v.time_visit) = CURDATE()
+        ORDER BY v.time_visit DESC
+`;
 
-        conn.query('SELECT * FROM students', (err, students) => {
-            if (err) return res.send("Database error");
+    conn.query(sql, (err, students) => {
+        if (err) {
+            console.log(err);
+            return res.send("Unable to load recent visits.");
+        }
 
-            res.render('admin-dashboard', {
-                courses: courses,
-                students: students
-            });
+        res.render('admin-dashboard', {
+            students: students
         });
     });
 });
 
-// ========= FOR ADDING STUDENT visits =========
+// ========= FOR ADDING STUDENT VISITS =========
 libtrack.post('/add-student', (req, res) => {
+
     const school_id = req.body.school_id;
-    const fullname = req.body.fullname;
-    const course_id = req.body.course_id;
-    const year_level = req.body.year_level;
 
-    const sql = `
-        INSERT INTO students
-        (school_id, fullname, course_id, year_level)
-        VALUES (?, ?, ?, ?)
-    `;
-
+    // Find the student
     conn.query(
-        sql,
-        [school_id, fullname, course_id, year_level],
-        (err) => {
-            if (err) {
-                console.log(err);
-                return res.send("Unable to add student. Please check the information.");
+        'SELECT * FROM students WHERE school_id = ?',
+        [school_id],
+        (err, students) => {
+
+            if (err) return res.send("Database error");
+
+            if (students.length === 0) {
+                return res.send("School ID not found");
             }
 
-            res.send(`<script>
-                alert('Student added successfully!');
-                location.href='/admin-dashboard';
-            </script>`);
+            const student = students[0];
+
+            // Record the visit
+            conn.query(
+                `INSERT INTO visits (school_id, student_course, time_visit)
+                VALUES (?, ?, NOW())`,
+                [
+                    student.school_id,
+                    student.course_id,
+                    student.time_visit
+                ],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        return res.send("Unable to record visit: " + err.message);
+                    }
+
+                    res.redirect('/admin-dashboard');
+                }
+            );
         }
     );
 });
@@ -128,6 +168,9 @@ libtrack.get('/logout', (req, res) => {
     res.redirect('/login');
 });
 
+
+
 libtrack.listen(4500, () => {
     console.log("You are running on port 4500");
+    console.log("http://localhost:4500/")
 });

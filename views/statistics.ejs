@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LibTrack Statistics</title>
+
+    <link rel="stylesheet" href="/css/statistics.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <h1>Visit Statistics</h1>
+
+    <a href="/admin-dashboard">Back to Dashboard</a>
+
+    <main class="statistics-container">
+
+        <!-- WEEKLY VISITS -->
+        <section class="chart-card">
+            <h2>Weekly Visits</h2>
+            <p>Monday to Sunday</p>
+
+            <div class="chart-wrapper">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </section>
+
+        <!-- MONTHLY VISITS -->
+        <section class="chart-card">
+            <h2>Monthly Visits</h2>
+            <p>January to December</p>
+
+            <div class="chart-wrapper">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </section>
+
+        <!-- TOTAL COURSE VISITS -->
+        <section class="chart-card">
+            <h2>Overall Visits per Course</h2>
+            <p>Fewest to most visits</p>
+
+            <div class="chart-wrapper course-wrapper"
+                 style="height: 500px; position: relative;">
+                <canvas id="courseChart"></canvas>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Data from statisticsRoutes.js
+        const weeklyVisits = <%- JSON.stringify(weeklyVisits || []) %>;
+        const monthlyVisits = <%- JSON.stringify(monthlyVisits || []) %>;
+        const courseVisits = <%- JSON.stringify(courseVisits || []) %>;
+
+
+        // =================================
+        // 1. WEEKLY VISITS - BAR CHART
+        // =================================
+
+        const weekdays = [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday'
+        ];
+
+        const weeklyTotals = Array(7).fill(0);
+
+        weeklyVisits.forEach(data => {
+            const index = Number(data.weekday_index);
+
+            if (index >= 0 && index < 7) {
+                weeklyTotals[index] = Number(data.total);
+            }
+        });
+
+        new Chart(document.getElementById('weeklyChart'), {
+            type: 'bar',
+
+            data: {
+                labels: weekdays,
+
+                datasets: [{
+                    label: 'Student Visits',
+                    data: weeklyTotals
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        title: {
+                            display: true,
+                            text: 'Number of Visits'
+                        }
+                    },
+
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Day of the Week'
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+
+        // =================================
+        // 2. MONTHLY VISITS - LINE CHART
+        // =================================
+
+        const months = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+        ];
+
+        const monthlyTotals = Array(12).fill(0);
+
+        monthlyVisits.forEach(data => {
+            const index = Number(data.month_index);
+
+            if (index >= 0 && index < 12) {
+                monthlyTotals[index] = Number(data.total);
+            }
+        });
+
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'line',
+
+            data: {
+                labels: months,
+
+                datasets: [{
+                    label: 'Student Visits',
+                    data: monthlyTotals,
+                    tension: 0.3,
+                    fill: false
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        title: {
+                            display: true,
+                            text: 'Number of Visits'
+                        }
+                    },
+
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        },
+
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+
+        // =================================
+        // 3. OVERALL COURSE VISITS
+        // ASCENDING HORIZONTAL BAR CHART
+        // =================================
+
+        // Sort courses from fewest visits to most visits
+        const sortedCourses = [...courseVisits].sort(
+            (a, b) => Number(a.total) - Number(b.total)
+        );
+
+        new Chart(document.getElementById('courseChart'), {
+            type: 'bar',
+
+            data: {
+                // Display course codes only
+                labels: sortedCourses.map(data => data.course_code),
+
+                datasets: [{
+                    label: 'Total Course Visits',
+                    data: sortedCourses.map(data => Number(data.total))
+                }]
+            },
+
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    x: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        title: {
+                            display: true,
+                            text: 'Total Visits'
+                        }
+                    },
+
+                    y: {
+                        reverse: true,
+                        offset: true,
+
+                        ticks: {
+                            autoSkip: false,
+
+                            font: {
+                                size: 12
+                            },
+
+                            padding: 8
+                        },
+
+                        title: {
+                            display: true,
+                            text: 'Course Code'
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon libtrack"
   },
   "keywords": [],
   "author": "",
@@ -12,9 +12,11 @@
   "type": "commonjs",
   "dependencies": {
     "ejs": "^7.0.1",
+    "exceljs": "^4.4.0",
     "express": "^5.3.0",
     "multer": "^2.4.0",
     "mysql": "^2.18.1",
+    "mysql2": "^3.24.6",
     "nodemon": "^3.1.14",
     "tesseract.js": "^7.0.0"
   }

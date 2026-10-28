@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Visit Report</title>
+</head>
+<body>
+    <h1>Download Visit Report</h1>
+
+    <a href="/admin-dashboard">Back to Dashboard</a>
+
+    <form action="/download-visit-records" method="GET">
+        <label for="date">Select visit date:</label>
+        <input type="date" id="date" name="date" required>
+        <button type="submit">Download Excel</button>
+    </form>
+</body>
+</html>
