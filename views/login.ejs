@@ -3,21 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libtrack</title>
+    <title>LibTrack | Login</title>
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-    <h1>Libtrack login</h1>
-        <center>
-        <div class="WOL">
-            <form action="/login" method="post">
-                <input type="username" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="password" required>
-                <button class="btn-log" type="submit">login</button>
-            </form>
-            <br>
-            <br>
-            <a class="reg-btn" href="/admin-reg">register as admin</a>
+
+    <header>
+        <div class="logo">
+            <h2>LibTrack</h2>
+            <span>Library Visit Monitoring</span>
         </div>
-    </center>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/#features">Features</a>
+            <a href="/#about">About</a>
+            <a href="/login" class="login-btn">Admin Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <p class="tagline">LIBRARY ADMINISTRATION SYSTEM</p>
+
+            <h1>Welcome Back.</h1>
+            <h2>Monitor Student Activity.</h2>
+
+            <p class="description">
+                Sign in to manage student library visits
+                and monitor attendance by academic course.
+            </p>
+
+            <form action="/login" method="post">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    required
+                >
+
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+                <button type="submit" class="btn-log">
+                    Admin Login
+                </button>
+            </form>
+
+            <p class="register">
+                Don't have an admin account?
+                <a href="/admin-reg">Register as Admin</a>
+            </p>
+
+            <a class="back-home" href="/">← Back to Home</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 LibTrack. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>
