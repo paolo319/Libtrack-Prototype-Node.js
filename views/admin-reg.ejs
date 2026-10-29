@@ -1,9 +1,42 @@
-    <center>
-        <div class="WOL">
-        <h1>ADMIN📚</h1>
-        <p>!!📚📚📚!!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibTrack | Admin Registration</title>
+    <link rel="stylesheet" href="/css/admin-reg.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h2>LibTrack</h2>
+            <span>Library Visit Monitoring</span>
+        </div>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/#features">Features</a>
+            <a href="/#about">About</a>
+            <a href="/login" class="login-btn">Admin Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="register-container">
+            <p class="tagline">LIBRARY ADMINISTRATION SYSTEM</p>
+
+            <h1>Create Admin Account.</h1>
+            <h2>Join LibTrack.</h2>
+
+            <p class="description">
+                Register your university and create your administrator account.
+            </p>
+
             <form action="/admin-reg" method="POST">
-                <select name="univ" required>
+
+                <label for="univ">University</label>
+                <select id="univ" name="univ" required>
                     <option value="">Select your university</option>
                     <option value="PHINMA Araullo University">PHINMA Araullo University</option>
                     <option value="PHINMA Cagayan de Oro College">PHINMA Cagayan de Oro College</option>
@@ -18,19 +51,40 @@
                     <option value="PHINMA Saint Jude College Dasmariñas">PHINMA Saint Jude College Dasmariñas</option>
                     <option value="PHINMA Southeastern College">PHINMA Southeastern College</option>
                 </select>
-                <br>
-                 <input type="name" name="fn" placeholder="Enter your firstname" required>
-                <br>
-                <input type="name" name="ln" placeholder="Enter your lastname" required>
-                <br>
-                <input type="username" name="user" placeholder="Enter your username" required>
-                <br>
-                <input type="password" name="pass" placeholder="Enter your password" required>
-                <br>
-                <button class="btn" type="submit">Register</button>
-            </form>
-        </div>
-        <a class="anchor" href="/login">Back to login</a>
-    </center>
 
-    
+                <div class="name-fields">
+                    <div>
+                        <label for="fn">First Name</label>
+                        <input type="text" id="fn" name="fn" placeholder="Enter your firstname" required>
+                    </div>
+
+                    <div>
+                        <label for="ln">Last Name</label>
+                        <input type="text" id="ln" name="ln" placeholder="Enter your lastname" required>
+                    </div>
+                </div>
+
+                <label for="user">Username</label>
+                <input type="text" id="user" name="user" placeholder="Enter your username" required>
+
+                <label for="pass">Password</label>
+                <input type="password" id="pass" name="pass" placeholder="Enter your password" required>
+
+                <button class="btn" type="submit">Register Account</button>
+            </form>
+
+            <p class="register-text">
+                Already have an account?
+                <a href="/login">Login here</a>
+            </p>
+
+            <a class="back-home" href="/">← Back to Home</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 LibTrack. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
