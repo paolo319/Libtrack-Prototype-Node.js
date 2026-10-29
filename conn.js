@@ -1,9 +1,9 @@
 const mysql = require('mysql');
 const conn = mysql.createConnection({
     host: '127.0.0.1',
-    user: 'project123',
-    password: 'MySQL@12345',
-    database: 'libtrack_26'
+    user: 'root',
+    password: '',
+    database: 'libtrack_db'
 });
 conn.connect((err) => {
     if (err) {

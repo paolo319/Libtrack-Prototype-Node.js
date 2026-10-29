@@ -100,7 +100,7 @@ main {
     justify-content: center;
     align-items: center;
     padding: 50px 20px;
-    background: linear-gradient(120deg, #ecfdf5, #c7f9e7);
+    background: url('/images/login_reg_bg.jpg') center center / cover no-repeat;
 }
 
 .login-container {

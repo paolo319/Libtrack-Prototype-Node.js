@@ -79,7 +79,7 @@ main {
     justify-content: center;
     align-items: center;
     padding: 50px 20px;
-    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    background: url('/images/login_reg_bg.jpg') center center / cover no-repeat;
 }
 
 .register-container {

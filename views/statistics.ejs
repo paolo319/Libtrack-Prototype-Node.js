@@ -7,15 +7,20 @@
 
     <title>LibTrack Statistics</title>
 
-    <link rel="stylesheet" href="/css/statistics.css">
+    <link rel="stylesheet" href="./css/statistics.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-    <h1>Visit Statistics</h1>
+    <!-- <h1>Visit Statistics</h1>
 
-    <a href="/admin-dashboard">Back to Dashboard</a>
+    <a href="/admin-dashboard">Back to Dashboard</a> -->
+    <header class="topbar">
+        <h1>Visit Statistics</h1>
+        <p>Library Management System</p>
+        <a href="/admin-dashboard">Back to Dashboard</a>
+    </header>
 
     <main class="statistics-container">
 
@@ -51,12 +56,19 @@
         </section>
 
     </main>
+    <div
+        id="chart-data"
+        data-weekly='<%- JSON.stringify(weeklyVisits || []) %>'
+        data-monthly='<%- JSON.stringify(monthlyVisits || []) %>'
+        data-courses='<%- JSON.stringify(courseVisits || []) %>'>
+    </div>
 
     <script>
-        // Data from statisticsRoutes.js
-        const weeklyVisits = <%- JSON.stringify(weeklyVisits || []) %>;
-        const monthlyVisits = <%- JSON.stringify(monthlyVisits || []) %>;
-        const courseVisits = <%- JSON.stringify(courseVisits || []) %>;
+        const chartData = document.getElementById('chart-data');
+
+        const weeklyVisits = JSON.parse(chartData.dataset.weekly);
+        const monthlyVisits = JSON.parse(chartData.dataset.monthly);
+        const courseVisits = JSON.parse(chartData.dataset.courses);
 
 
         // =================================
