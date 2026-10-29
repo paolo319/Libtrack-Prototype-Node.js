@@ -1,78 +1,218 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>LibTrack | Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/admin-dash.css">
 </head>
 <body>
-    <h1>Admin Dashboard</h1>
 
-    <div class="admin-actions">
-        <a href="/add-course">Add Course</a>
-        <a href="/statistics">Statistics</a>
-        <a href="/visit-records">Download Hardcopy</a>
-        <a href="/logout" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
-    </div>
+    <%
+        const universityLogos = {
+            'PHINMA Araullo University': '/images/phinma-au.png',
+            'PHINMA Cagayan de Oro College': '/images/phinma-coc.png',
+            'PHINMA University of Pangasinan': '/images/phinma-upang.png',
+            'PHINMA University of Iloilo': '/images/phinma-ui.jpg',
+            'PHINMA UPang College Urdaneta': '/images/phinma-urdaneta.jpg',
+            'Southwestern University PHINMA': '/images/swuph.png',
+            'PHINMA Saint Jude College Manila': '/images/sjc-manila.png',
+            'PHINMA Saint Jude College Quezon City': '/images/sjc-quezon.png',
+            'PHINMA Rizal College of Laguna': '/images/rcl.png',
+            'PHINMA Union College of Laguna': '/images/ucl.png',
+            'PHINMA Saint Jude College Dasmariñas': '/images/sjc-dasma.jpg'
+        };
 
-<section class="add-student">
-    <h2>Add Student</h2>
+        const logo = universityLogos[university];
+    %>
 
-    <form action="/add-student" method="POST">
-        <label for="school_id">School ID</label>
-        <input type="text" id="school_id" name="school_id" placeholder="Enter school ID" required>
-        <button type="submit">Add Student</button>
-    </form>
-</section>
+    <header class="topbar">
+        <a href="/admin-dashboard" class="brand">
+            <% if (logo) { %>
+                <img src="<%= logo %>" alt="University logo" class="university-logo">
+            <% } %>
 
+            <div class="brand-text">
+                <h2>LibTrack</h2>
+                <span>Library Visit Tracking System</span>
+            </div>
+        </a>
 
-<!-- Paolo Montalban -->
-<!-- Student ID Scanner -->
-<section>
-    <h2>Student ID Scanner</h2>
+        <nav class="admin-nav">
+            <a href="/admin-dashboard" class="active">Dashboard</a>
+            <a href="/statistics">Statistics</a>
+            <a href="/visit-records">Visit Records</a>
+            <a href="/logout" class="logout-btn"
+               onclick="return confirm('Are you sure you want to logout?')">
+                Logout
+            </a>
+        </nav>
+    </header>
 
-    <p>Place the printed student ID in front of the camera.</p>
-    <video
-    id="camera"
-    width="400"
-    height="300"
-    autoplay
-    playsinline
-    muted
-    style="background: #222;"></video>
-    <br><br>
-    <button type="button" id="scanBtn" disabled>Scan Student ID</button>
-    
-    <canvas id="canvas" hidden></canvas>
-    <p id="result">Opening camera...</p>
-</section>
+    <main class="dashboard">
 
-<!--Paolo Montalban-->
-<!---Paolo-->
-<div class="student-list">
-    <h2>Recently Visited</h2>
+        <section class="welcome-section">
+            <div>
+                <p class="eyebrow">ADMINISTRATION</p>
+                <h1>Admin Dashboard</h1>
+                <p class="welcome-text">
+                    Manage student library visits and monitor recent activity.
+                </p>
+            </div>
 
-    <% if (students && students.length > 0) { %>
-        <% students.forEach(data => { %>
-            <p>
-                <%= data.school_id %> -
-                <%= data.fullname %> -
-                <%= data.course_code %> -
-                Year Level: <%= data.year_level %> -
-                <%= new Date(data.time_visit).toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                }) %>
-            </p>
-        <% }) %>
-    <% } else { %>
-        <p>No recent visits found.</p>
-    <% } %>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="/camera.js"></script>
-<script src="/scanner.js"></script>
-<!---Paolo Montalban-->
+            <div class="university-label">
+                <span class="status-dot"></span>
+                <span><%= university %></span>
+            </div>
+        </section>
+
+        <section class="dashboard-grid">
+
+            <!-- Add Student -->
+            <div class="card add-student">
+                <div class="section-heading">
+                    <div class="heading-icon">+</div>
+                    <div>
+                        <h2>Record a Visit</h2>
+                        <p>Enter a student's school ID.</p>
+                    </div>
+                </div>
+
+                <form action="/add-student" method="POST">
+                    <label for="school_id">Student School ID</label>
+                    <input
+                        type="text"
+                        id="school_id"
+                        name="school_id"
+                        placeholder="Enter school ID"
+                        required
+                    >
+                    <button type="submit" class="primary-btn">
+                        Record Student Visit
+                    </button>
+                </form>
+
+                <p class="form-note">
+                    Make sure the school ID belongs to a registered student.
+                </p>
+            </div>
+
+            <!-- Student ID Scanner -->
+            <div class="card scanner-card">
+                <div class="section-heading">
+                    <div class="heading-icon scanner-icon">ID</div>
+                    <div>
+                        <h2>Student ID Scanner</h2>
+                        <p>Scan a printed student ID using your camera.</p>
+                    </div>
+                </div>
+
+                <div class="camera-container">
+                    <video
+                        id="camera"
+                        autoplay
+                        playsinline
+                        muted
+                    ></video>
+
+                    <div class="camera-placeholder">
+                        Camera preview will appear here.
+                    </div>
+                </div>
+
+                <button type="button" id="scanBtn" class="primary-btn" disabled>
+                    Scan Student ID
+                </button>
+
+                <canvas id="canvas" hidden></canvas>
+                <p id="result" class="scanner-result">Opening camera...</p>
+            </div>
+
+        </section>
+
+        <!-- Recently Visited -->
+        <section class="card visits-card">
+            <div class="visits-heading">
+                <div>
+                    <p class="eyebrow">LIBRARY ACTIVITY</p>
+                    <h2>Recently Visited</h2>
+                    <p class="muted-text">
+                        Student visits recorded today.
+                    </p>
+                </div>
+
+                <a href="/visit-records" class="secondary-btn">
+                    View All Records
+                </a>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>School ID</th>
+                            <th>Student Name</th>
+                            <th>Course</th>
+                            <th>Year Level</th>
+                            <th>Visit Time</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% if (students && students.length > 0) { %>
+                            <% students.forEach(data => { %>
+                                <tr>
+                                    <td>
+                                        <span class="school-id">
+                                            <%= data.school_id %>
+                                        </span>
+                                    </td>
+                                    <td class="student-name">
+                                        <%= data.fullname %>
+                                    </td>
+                                    <td>
+                                        <span class="course-badge">
+                                            <%= data.course_code %>
+                                        </span>
+                                    </td>
+                                    <td>Year <%= data.year_level %></td>
+                                    <td class="visit-time">
+                                        <%= new Date(data.time_visit).toLocaleTimeString('en-US', {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: true
+                                        }) %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <div class="empty-icon">—</div>
+                                    <strong>No visits recorded today</strong>
+                                    <p>Student visits will appear here once recorded.</p>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                Showing today's recorded visits
+            </div>
+        </section>
+
+        <footer class="dashboard-footer">
+            <p>LibTrack &copy; 2026 | Library Visit Tracking System</p>
+        </footer>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="/camera.js"></script>
+    <script src="/scanner.js"></script>
+
 </body>
 </html>

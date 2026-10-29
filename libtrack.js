@@ -1,6 +1,7 @@
 
 const express = require('express');
 const libtrack = express();
+const session = require('express-session');
 
 libtrack.set('view engine', 'ejs');
 libtrack.use(express.static('public'));
@@ -13,9 +14,13 @@ const scannerRoutes = require('./scannerRoutes');
 const statisticsRoutes = require('./statistic');
 libtrack.use(statisticsRoutes);
 libtrack.use(require('./visit-records.js'));
-
-
 libtrack.use(scannerRoutes);
+
+libtrack.use(session({
+    secret: 'libtrack-secret-key',
+    resave: false,
+    saveUninitialized: false
+}));
 
 libtrack.get('/', (req, res) => {
     res.render('landing-page');
@@ -39,6 +44,11 @@ libtrack.post('/login', (req, res) => {
             }
 
             if (results.length > 0) {
+                req.session.admin = {
+                    id: results[0].id,
+                    university: results[0].university
+                };
+
                 console.log("SUCCESSFULLY LOGGED IN!");
                 res.redirect('/admin-dashboard');
             } else {
@@ -65,11 +75,7 @@ libtrack.post('/admin-reg', (req, res) => {
     const user = req.body.user;
     const pass = req.body.pass;
 
-    const sql = `
-        INSERT INTO user_acc
-        (university, firstname, lastname, username, password)
-        VALUES (?, ?, ?, ?, ?)
-    `;
+    const sql = `INSERT INTO user_acc (university, firstname, lastname, username, password) VALUES (?, ?, ?, ?, ?)`;
 
     conn.query(sql, [univ, fn, ln, user, pass], (err) => {
         if (err) {
@@ -84,29 +90,14 @@ libtrack.post('/admin-reg', (req, res) => {
     });
 });
 
-//Paolo
+// ========= ADMIN DASHBOARD =========
 libtrack.get('/admin-dashboard', (req, res) => {
-    // const sql = `
-    //     SELECT v.school_id, s.fullname, c.course_code, s.year_level, v.time_visit
-    //     FROM visits AS v JOIN students AS s 
-    //     ON v.school_id = s.school_id
-    //     JOIN courses AS c ON s.course_id = c.course_id
-    //     ORDER BY v.time_visit DESC;
-    // `;
-    const sql = `SELECT
-        v.time_visit,
-        s.school_id,
-        s.fullname,
-        c.course_code,
-        s.year_level
-        FROM visits AS v
-        INNER JOIN students AS s
-        ON v.school_id = s.school_id
-        INNER JOIN courses AS c
-        ON s.course_id = c.course_id
-        WHERE DATE(v.time_visit) = CURDATE()
-        ORDER BY v.time_visit DESC
-`;
+
+    if (!req.session.admin) {
+        return res.redirect('/login');
+    }
+
+    const sql = `SELECT v.time_visit, s.school_id, s.fullname, c.course_code, s.year_level FROM visits AS v INNER JOIN students AS s ON v.school_id = s.school_id INNER JOIN courses AS c ON s.course_id = c.course_idWHERE DATE(v.time_visit) = CURDATE() ORDER BY v.time_visit DESC`;
 
     conn.query(sql, (err, students) => {
         if (err) {
@@ -115,7 +106,8 @@ libtrack.get('/admin-dashboard', (req, res) => {
         }
 
         res.render('admin-dashboard', {
-            students: students
+            students: students,
+            university: req.session.admin.university
         });
     });
 });
@@ -141,8 +133,7 @@ libtrack.post('/add-student', (req, res) => {
 
             // Record the visit
             conn.query(
-                `INSERT INTO visits (school_id, student_course, time_visit)
-                VALUES (?, ?, NOW())`,
+                `INSERT INTO visits (school_id, student_course, time_visit) VALUES (?, ?, NOW())`,
                 [
                     student.school_id,
                     student.course_id,
@@ -162,10 +153,12 @@ libtrack.post('/add-student', (req, res) => {
 });
 
 
-//========== LOGOUT =========
+// ========= LOGOUT =========
 libtrack.get('/logout', (req, res) => {
-    console.log("ADMIN LOGGED OUT!");
-    res.redirect('/login');
+    req.session.destroy(() => {
+        console.log("ADMIN LOGGED OUT!");
+        res.redirect('/login');
+    });
 });
 
 
