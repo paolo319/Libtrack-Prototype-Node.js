@@ -1,10 +1,11 @@
-
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download Visit Report</title>
+    <link rel="stylesheet" href="/css/visit-records.css">
 </head>
 <body>
     <h1>Download Visit Report</h1>
@@ -16,5 +17,63 @@
         <input type="date" id="date" name="date" required>
         <button type="submit">Download Excel</button>
     </form>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Visit Report | LibTrack</title>
+    <link rel="stylesheet" href="/css/visit-records.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <h1>LibTrack</h1>
+            <p>Library Management System</p>
+            <br>
+            <a href="/admin-dashboard" class="back-button">
+            Back to Dashboard</a>
+        </div>
+
+        
+    </header>
+
+    <main class="page-container">
+        <section class="report-card">
+
+            <h2>Download Visit Report</h2>
+            <p class="description">
+                Export library visit records for your selected date.
+            </p>
+
+            <form action="/download-visit-records" method="GET">
+
+                <div class="form-group">
+                    <label for="date">Select Visit Date</label>
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="download-button">
+                    Download Excel
+                </button>
+
+            </form>
+
+            <p class="file-note">
+                Excel spreadsheet · Library visit records
+            </p>
+
+        </section>
+    </main>
+
 </body>
 </html>

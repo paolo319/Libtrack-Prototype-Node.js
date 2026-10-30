@@ -16,6 +16,7 @@ libtrack.use(statisticsRoutes);
 libtrack.use(require('./visit-records.js'));
 libtrack.use(scannerRoutes);
 
+
 libtrack.use(session({
     secret: 'libtrack-secret-key',
     resave: false,

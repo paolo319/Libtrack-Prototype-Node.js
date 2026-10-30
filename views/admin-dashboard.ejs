@@ -10,21 +10,31 @@
 <body>
 
     <%
+        // Keys are normalized (lowercase, no leading "PHINMA"), so accounts
+        // registered with either "PHINMA University of Iloilo" or the older
+        // "University of Iloilo" both resolve to the same logo.
         const universityLogos = {
-            'PHINMA Araullo University': '/images/phinma-au.png',
-            'PHINMA Cagayan de Oro College': '/images/phinma-coc.png',
-            'PHINMA University of Pangasinan': '/images/phinma-upang.png',
-            'PHINMA University of Iloilo': '/images/phinma-ui.jpg',
-            'PHINMA UPang College Urdaneta': '/images/phinma-urdaneta.jpg',
-            'Southwestern University PHINMA': '/images/swuph.png',
-            'PHINMA Saint Jude College Manila': '/images/sjc-manila.png',
-            'PHINMA Saint Jude College Quezon City': '/images/sjc-quezon.png',
-            'PHINMA Rizal College of Laguna': '/images/rcl.png',
-            'PHINMA Union College of Laguna': '/images/ucl.png',
-            'PHINMA Saint Jude College Dasmariñas': '/images/sjc-dasma.jpg'
+            'araullo university': '/images/phinma-au.png',
+            'cagayan de oro college': '/images/phinma-coc.png',
+            'university of pangasinan': '/images/phinma-upang.png',
+            'university of iloilo': '/images/phinma-ui.jpg',
+            'upang college urdaneta': '/images/phinma-urdaneta.jpg',
+            'southwestern university phinma': '/images/phinma-swu.png',
+            'saint jude college manila': '/images/phinma-sjc-manila.png',
+            'saint jude college quezon city': '/images/phinma-sjc-qc.png',
+            'rizal college of laguna': '/images/phinma-rcl.png',
+            'union college of laguna': '/images/phinma-ucl.png',
+            'saint jude college dasmariñas': '/images/phinma-sjc-dasma.jpg'
         };
 
-        const logo = universityLogos[university];
+        const normalizeUniversity = (name) => String(name || '')
+            .normalize('NFC')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase()
+            .replace(/^phinma\s+/, '');
+
+        const logo = universityLogos[normalizeUniversity(university)];
     %>
 
     <header class="topbar">
