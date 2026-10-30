@@ -97,7 +97,10 @@ libtrack.get('/admin-dashboard', (req, res) => {
         return res.redirect('/login');
     }
 
-    const sql = `SELECT v.time_visit, s.school_id, s.fullname, c.course_code, s.year_level FROM visits AS v INNER JOIN students AS s ON v.school_id = s.school_id INNER JOIN courses AS c ON s.course_id = c.course_id WHERE DATE(v.time_visit) = CURDATE() ORDER BY v.time_visit DESC`;
+    const sql = `SELECT v.time_visit, s.school_id, s.fullname, c.course_code, s.year_level FROM visits AS v 
+    INNER JOIN students AS s ON v.school_id = s.school_id 
+    INNER JOIN courses AS c ON s.course_id = c.course_id 
+    WHERE DATE(v.time_visit) = CURDATE() ORDER BY v.time_visit DESC`;
 
     conn.query(sql, (err, students) => {
         if (err) {
